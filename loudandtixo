@@ -1,0 +1,20 @@
+import wave
+import struct
+k = int(input())
+source = wave.open("in.wav", mode="rb")
+dest = wave.open("out.wav", mode="wb")
+dest.setparams(source.getparams())
+frames_count = source.getnframes()
+data = struct.unpack("<" + str(frames_count) + "h", source.readframes(frames_count))
+data1 = []
+for i in data:
+    if i * k > 32767:
+        data1.append(32767)
+    elif i * k < -32768:
+        data1.append(-32768)
+    else:
+        data1.append(i * k)
+newframes = struct.pack("<" + str(len(data1)) + "h", *data1)
+dest.writeframes(newframes)
+source.close()
+dest.close()
